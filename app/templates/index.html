@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>趣水印</title>
+	<script src="https://cdn.staticfile.org/jquery/1.10.2/jquery.min.js"></script>
+	<link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css">
+	<script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+</head>
+<body>
+	<div align="center">
+		<div style="width: 500px; margin-top: 60px">
+			<input type="text" class="form-control" name="w_name" placeholder="请将app复制链接粘贴到这里">
+
+			<!-- 提供额外的视觉效果，标识一组按钮中的原始动作 -->
+			<button id="deal" type="button" class="btn btn-primary" style="margin-top: 30px; margin-right: 10px">解析</button>
+			<!-- 表示一个成功的或积极的动作 -->
+			<button id="download" type="button" class="btn btn-success" style="margin-top: 30px; margin-left: 10px">下载</button>
+		</div>
+		<video id="player" class="player" type="video/mp4" controls="controls" style="width: 300px; margin-top: 60px; display: none;"></video>
+	</div>
+</body>
+<script type="text/javascript" src="../static/base64.js"></script>
+<script type="text/javascript">
+	var download_url = "";
+	$("#deal").click(
+		function(){
+
+			if ($(".form-control").val() == '') {
+				alert("请输入复制链接地址！")
+			} else{
+				var b = new Base64();  
+				var result = b.encode($(".form-control").val());
+				getUrl(result)
+			}
+
+		});
+
+
+	$("#download").click(function(){
+		console.log("download")
+		window.open(download_url);
+	});
+
+
+	function getUrl(url) {
+		$.get("http://127.0.0.0:5000/" + url, function(data, status) {
+			console.log(data + "  :  " + status);
+			console.log(data.playAddr)
+			document.getElementById("player").src=data.url;
+			download_url = data.url;
+			document.getElementById("player").style.display="block";
+		});
+	}
+
+
+</script>
+</html>
