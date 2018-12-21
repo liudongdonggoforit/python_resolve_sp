@@ -1,18 +1,12 @@
 import re
 import requests
-
-headers = {'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
-           'Accept-Encoding': 'gzip, deflate, br',
-           'Accept-Language': 'zh-CN,zh;q=0.9',
-           'Connection': 'keep-alive',
-           'Host': 'aweme.snssdk.com',
-           'Upgrade-Insecure-Requests': '1',
-           'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) '
-                         'Chrome/67.0.3396.99 Safari/537.36'}
+from app.libs.headers import common_headers, tutu_header
+from flask import current_app
+import json
 
 
 def get_location(url):
-    html = requests.get(url, headers=headers, allow_redirects=False)
+    html = requests.get(url, headers=common_headers, allow_redirects=False)
     location_url = html.headers['Location'];
     print(html.headers)
     print(location_url)
@@ -23,7 +17,39 @@ def get_url(url):
     html = requests.get(url, allow_redirects=False)
     download_url = html.headers['Location'];
     print(download_url)
-    text = requests.get(download_url, headers=headers).text
+    text = requests.get(download_url, headers=common_headers).text
     pat = re.compile('playAddr:(.*?)cover', re.S)
     result = pat.findall(text)[0]
     return result
+
+
+def get_tutu(short_url):
+    """
+    {sourceUrl: "http://vm.tiktok.com/JQ6Qat/", flatform: 18}
+    获取解析结果
+    :return:
+    """
+    data = {"sourceUrl": str(short_url), "flatform": "18"}
+    if 'tiktok' in str(short_url):
+        referer = "http://www.tutujiexi.com/tiktok.html"
+        data["flatform"] = "18"
+    elif 'douyin' in str(short_url):
+        referer = "http://www.tutujiexi.com/douyin.html"
+        data["flatform"] = "1"
+    elif 'tiktok' in str(short_url):
+        referer = "http://www.tutujiexi.com/douyin.html"
+        data["flatform"] = "2"
+    elif 'tiktok' in str(short_url):
+        referer = "http://www.tutujiexi.com/tiktok.html"
+        data["flatform"] = "18"
+    elif 'tiktok' in str(short_url):
+        referer = "http://www.tutujiexi.com/tiktok.html"
+        data["flatform"] = "18"
+    elif 'tiktok' in str(short_url):
+        referer = "http://www.tutujiexi.com/tiktok.html"
+        data["flatform"] = "18"
+    tutu_header['Referer'] = referer
+    print(data)
+    r = requests.post(current_app.config['TUTU_URL'], data=json.dumps(data), headers=tutu_header).text
+    return r
+

@@ -2,16 +2,16 @@ import base64
 import re
 
 from app.web import web
-from flask import render_template, jsonify
-from app.libs.hellper import get_location, get_url
+from flask import render_template, jsonify, request
+from app.libs.hellper import get_location, get_url, get_tutu
 
 
-@web.route("/")
+# @web.route("/")
 def index():
-    return render_template("index.html")
+    return render_template("index_1.html")
 
 
-@web.route('/<url>')
+# @web.route('/<url>')
 def resolve_url(url):
     playAddr = get_url(base64.b64decode(url)).replace(",", "").replace('"', "")
     print(playAddr)
@@ -23,3 +23,12 @@ def resolve_url(url):
     print(video_url)
     down_url = "http://118.25.217.21:1001/download/videos/" + filename
     return jsonify({'playAddr': playAddr, 'url': down_url})
+
+
+@web.route("/tutu")
+def tutu_url():
+    url = request.args["url"]
+    short_url = base64.b64decode(url)
+    result = get_tutu(short_url)
+    return result
+
