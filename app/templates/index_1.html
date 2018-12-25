@@ -9,6 +9,30 @@
 </head>
 <body>
 	<div align="center">
+        <div style="margin-top: 60px">
+            <span style="color: red">现在支持以下单视频解析，后面会支持批量视频解析（包括抖音、快手用户上传、喜欢、关注用户的所有视频）、视频MD5批量解析、视频优秀资源下载</span>
+        </div>
+        <div style="margin-top: 20px">
+            <button type="button" class="btn btn-info">抖音</button>
+            <button type="button" class="btn btn-info">快手</button>
+            <button type="button" class="btn btn-info">TikTok</button>
+            <button type="button" class="btn btn-info">全民小视频</button>
+            <button type="button" class="btn btn-info">美拍</button>
+            <button type="button" class="btn btn-info">陌陌</button>
+            <button type="button" class="btn btn-info">小影</button>
+            <button type="button" class="btn btn-info">微视</button>
+            <button type="button" class="btn btn-info">微博</button>
+            <button type="button" class="btn btn-info">秒拍</button>
+            <button type="button" class="btn btn-info">网易云音乐</button>
+            <button type="button" class="btn btn-info">小咖秀</button>
+            <button type="button" class="btn btn-info">皮皮虾</button>
+            <button type="button" class="btn btn-info">逗拍</button>
+            <button type="button" class="btn btn-info">今日头条</button>
+            <button type="button" class="btn btn-info">酷然</button>
+            <button type="button" class="btn btn-info">伙拍</button>
+            <button type="button" class="btn btn-info">instagram</button>
+            <button type="button" class="btn btn-info">趣多拍</button>
+        </div>
 		<div style="width: 500px; margin-top: 60px">
 			<input type="text" class="form-control" name="w_name" placeholder="请将app复制链接粘贴到这里">
 
@@ -21,6 +45,8 @@
 	</div>
 </body>
 <script type="text/javascript" src="../static/base64.js"></script>
+<script src="https://cdn.staticfile.org/crypto-js/3.1.9-1/core.min.js"></script>
+<script src="https://cdn.staticfile.org/crypto-js/3.1.9-1/enc-base64.min.js"></script>
 <script type="text/javascript">
 	var download_url = "";
 	$("#deal").click(
@@ -43,14 +69,21 @@
 
 
 	function getUrl(url) {
-		$.get("http://127.0.0.0:5010/tutu/v1.0/" + url, function(data, status) {
+		$.get("http://118.25.217.21:1111/resolve?url=" + url, function(data, status) {
 			console.log(data + "  :  " + status);
-			console.log(data.playAddr)
-			document.getElementById("player").src=data.url;
-			download_url = data.url;
+			console.log(data.title)
+			console.log(data.pic_url)
+			console.log(data.video_url)
+            download_url = parseUrl(data.video_url);
+            // download_url = data.video_url;
+			document.getElementById("player").src=download_url;
 			document.getElementById("player").style.display="block";
-		});
+		},'json');
 	}
+
+	function parseUrl(url) {
+	   return "http://www.tutujiexi.com/xz/video_" + new Date().getTime() + ".mp4?s=" + encodeURIComponent(CryptoJS.enc.Base64.stringify(CryptoJS.enc.Utf8.parse(url)));
+    }
 
 
 </script>

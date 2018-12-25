@@ -6,7 +6,7 @@ from flask import render_template, jsonify, request
 from app.libs.hellper import get_location, get_url, get_tutu
 
 
-# @web.route("/")
+@web.route("/")
 def index():
     return render_template("index_1.html")
 
@@ -25,10 +25,11 @@ def resolve_url(url):
     return jsonify({'playAddr': playAddr, 'url': down_url})
 
 
-@web.route("/tutu")
+@web.route("/resolve")
 def tutu_url():
     url = request.args["url"]
     short_url = base64.b64decode(url)
     result = get_tutu(short_url)
+    print(result)
     return result
 
